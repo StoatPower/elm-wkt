@@ -1,0 +1,27 @@
+{
+  "name": "elm-wkt-exploration",
+  "version": "1.0.0",
+  "description": "Exploration for writing a WKT parser in the Elm language.",
+  "main": "index.js",
+  "scripts": {
+    "elm-package": "elm-package",
+    "elm-make": "elm-make",
+    "elm-reactor": "elm-reactor",
+    "elm-repl": "elm-repl",
+    "elm-test": "elm-test --compiler \"./node_modules/.bin/elm-make\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StoatPower/elm-wkt-exploration.git"
+  },
+  "author": "Matthew Caldwell",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StoatPower/elm-wkt-exploration/issues"
+  },
+  "homepage": "https://github.com/StoatPower/elm-wkt-exploration#readme",
+  "devDependencies": {
+    "elm": "^0.18.0",
+    "elm-test": "^0.18.12"
+  }
+}
