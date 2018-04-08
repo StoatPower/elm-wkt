@@ -1,6 +1,7 @@
 module Tests exposing (..)
 
 import WellKnown.Parse exposing (..)
+import WellKnown.Unparse exposing (..)
 import GeoJson exposing (Geometry(..), Position)
 import Combine as C
 import Expect exposing (Expectation)
@@ -34,7 +35,7 @@ suite =
             , test "negative int" <|
                 \_ ->
                     testParser numberParser "-1" -1
-            ]            
+            ]
         , describe "parse Position with no parens"
             [ test "integer position with no altitude" <|
                 \_ ->
@@ -65,8 +66,9 @@ suite =
             ]
         , describe "parse a list of Positions"
             (let
-                expected = [ (1.0, 1.0, 0.0 ), (2.0, 2.0, 0.0) ]
-            in
+                expected =
+                    [ ( 1.0, 1.0, 0.0 ), ( 2.0, 2.0, 0.0 ) ]
+             in
                 [ test "list of float positions without parens" <|
                     \_ ->
                         testParser positionListParser "1.0 1.0, 2.0 2.0" expected
@@ -82,9 +84,10 @@ suite =
                 ]
             )
         , describe "parse a list of a list of Positions"
-            ( let
-                expected = [[ (1.0, 1.0, 0.0 ), (2.0, 2.0, 0.0) ], [ (3.0, 3.0, 0.0 ), (4.0, 4.0, 0.0) ]]
-            in
+            (let
+                expected =
+                    [ [ ( 1.0, 1.0, 0.0 ), ( 2.0, 2.0, 0.0 ) ], [ ( 3.0, 3.0, 0.0 ), ( 4.0, 4.0, 0.0 ) ] ]
+             in
                 [ test "list of a list of int positions without position parens and no altitude" <|
                     \_ ->
                         testParser positionListListParser "(1 1, 2 2), (3 3, 4 4)" expected
@@ -96,11 +99,11 @@ suite =
         , describe "parse a list of a list of a list of Positions"
             [ test "list of a list of a list of int positions without position parens and no altitude" <|
                 \_ ->
-                    testParser 
-                        positionListListListParser 
+                    testParser
+                        positionListListListParser
                         "((1 1, 2 2), (3 3, 4 4)), ((1 1, 2 2), (3 3, 4 4))"
-                        [ [[ (1.0, 1.0, 0.0 ), (2.0, 2.0, 0.0) ], [ (3.0, 3.0, 0.0 ), (4.0, 4.0, 0.0) ]]
-                        , [[ (1.0, 1.0, 0.0 ), (2.0, 2.0, 0.0) ], [ (3.0, 3.0, 0.0 ), (4.0, 4.0, 0.0) ]]
+                        [ [ [ ( 1.0, 1.0, 0.0 ), ( 2.0, 2.0, 0.0 ) ], [ ( 3.0, 3.0, 0.0 ), ( 4.0, 4.0, 0.0 ) ] ]
+                        , [ [ ( 1.0, 1.0, 0.0 ), ( 2.0, 2.0, 0.0 ) ], [ ( 3.0, 3.0, 0.0 ), ( 4.0, 4.0, 0.0 ) ] ]
                         ]
             ]
         , describe "parse Point"
@@ -114,39 +117,39 @@ suite =
         , describe "parse MultiPoint"
             [ test "multipoint geometry (float) with no altitude" <|
                 \_ ->
-                    testParser multiPointParser "MULTIPOINT (1.0 1.0, 2.0 2.0)" (MultiPoint [(1.0, 1.0, 0.0), (2.0, 2.0, 0.0)])
+                    testParser multiPointParser "MULTIPOINT (1.0 1.0, 2.0 2.0)" (MultiPoint [ ( 1.0, 1.0, 0.0 ), ( 2.0, 2.0, 0.0 ) ])
             , test "multipoint geometry (int) with parens and altitude" <|
                 \_ ->
-                    testParser multiPointParser "MULTIPOINT ((1 1 2), (2 2 2))" (MultiPoint [(1.0, 1.0, 2.0), (2.0, 2.0, 2.0)])
+                    testParser multiPointParser "MULTIPOINT ((1 1 2), (2 2 2))" (MultiPoint [ ( 1.0, 1.0, 2.0 ), ( 2.0, 2.0, 2.0 ) ])
             ]
         , describe "parse LineString"
             [ test "linestring geometry (int) without position parens and no altitude" <|
                 \_ ->
-                    testParser lineStringParser "LINESTRING (1 1, 2 2)" (LineString [(1.0, 1.0, 0.0), (2.0, 2.0, 0.0)])
+                    testParser lineStringParser "LINESTRING (1 1, 2 2)" (LineString [ ( 1.0, 1.0, 0.0 ), ( 2.0, 2.0, 0.0 ) ])
             ]
         , describe "parse MultiLineString"
             [ test "multilinestring geometry (float) with position parens and altitude" <|
                 \_ ->
-                    testParser 
-                        multiLineStringParser 
-                        "MULTILINESTRING (((1.0 1.0 1.0), (2.0 2.0 2.0)), ((3.0 3.0 3.0), (4.0 4.0 4.0)))" 
-                        (MultiLineString [[(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)], [(3.0, 3.0, 3.0), (4.0, 4.0, 4.0)]])
+                    testParser
+                        multiLineStringParser
+                        "MULTILINESTRING (((1.0 1.0 1.0), (2.0 2.0 2.0)), ((3.0 3.0 3.0), (4.0 4.0 4.0)))"
+                        (MultiLineString [ [ ( 1.0, 1.0, 1.0 ), ( 2.0, 2.0, 2.0 ) ], [ ( 3.0, 3.0, 3.0 ), ( 4.0, 4.0, 4.0 ) ] ])
             ]
         , describe "parse Polygon"
             [ test "polygon geometry (int) without position parens and no altitude" <|
                 \_ ->
-                    testParser 
-                        polygonParser 
+                    testParser
+                        polygonParser
                         "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))"
-                        (Polygon [[(30.0, 10.0, 0.0), (40.0, 40.0, 0.0), (20.0, 40.0, 0.0), (10.0, 20.0, 0.0), (30.0, 10.0, 0.0)]])
+                        (Polygon [ [ ( 30.0, 10.0, 0.0 ), ( 40.0, 40.0, 0.0 ), ( 20.0, 40.0, 0.0 ), ( 10.0, 20.0, 0.0 ), ( 30.0, 10.0, 0.0 ) ] ])
             , test "polygon geometry with hole (int) without position parens and no altitude" <|
                 \_ ->
                     testParser
                         polygonParser
                         "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10),(20 30, 35 35, 30 20, 20 30))"
-                        (Polygon 
-                            [ [(35.0, 10.0, 0.0), (45.0, 45.0, 0.0), (15.0, 40.0, 0.0), (10.0, 20.0, 0.0), (35.0, 10.0, 0.0)]
-                            , [(20.0, 30.0, 0.0), (35.0, 35.0, 0.0), (30.0, 20.0, 0.0), (20.0, 30.0, 0.0)]
+                        (Polygon
+                            [ [ ( 35.0, 10.0, 0.0 ), ( 45.0, 45.0, 0.0 ), ( 15.0, 40.0, 0.0 ), ( 10.0, 20.0, 0.0 ), ( 35.0, 10.0, 0.0 ) ]
+                            , [ ( 20.0, 30.0, 0.0 ), ( 35.0, 35.0, 0.0 ), ( 30.0, 20.0, 0.0 ), ( 20.0, 30.0, 0.0 ) ]
                             ]
                         )
             ]
@@ -156,9 +159,9 @@ suite =
                     testParser
                         multiPolygonParser
                         "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))"
-                        (MultiPolygon 
-                            [ [[(30.0, 20.0, 0.0), (45.0, 40.0, 0.0), (10.0, 40.0, 0.0), (30.0, 20.0, 0.0)]]
-                            , [[(15.0, 5.0, 0.0), (40.0, 10.0, 0.0), (10.0, 20.0, 0.0), (5.0, 10.0, 0.0), (15.0, 5.0, 0.0)]]
+                        (MultiPolygon
+                            [ [ [ ( 30.0, 20.0, 0.0 ), ( 45.0, 40.0, 0.0 ), ( 10.0, 40.0, 0.0 ), ( 30.0, 20.0, 0.0 ) ] ]
+                            , [ [ ( 15.0, 5.0, 0.0 ), ( 40.0, 10.0, 0.0 ), ( 10.0, 20.0, 0.0 ), ( 5.0, 10.0, 0.0 ), ( 15.0, 5.0, 0.0 ) ] ]
                             ]
                         )
             ]
@@ -168,9 +171,9 @@ suite =
                     testParser
                         geometryCollectionParser
                         "GEOMETRYCOLLECTION (POINT (4 6), LINESTRING (4 6, 7 10))"
-                        ( GeometryCollection
-                            [ Point (4.0, 6.0, 0.0)
-                            , LineString [ (4.0, 6.0, 0.0), (7.0, 10.0, 0.0) ]
+                        (GeometryCollection
+                            [ Point ( 4.0, 6.0, 0.0 )
+                            , LineString [ ( 4.0, 6.0, 0.0 ), ( 7.0, 10.0, 0.0 ) ]
                             ]
                         )
             ]
