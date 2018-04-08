@@ -23,6 +23,7 @@
   "homepage": "https://github.com/StoatPower/elm-wkt-exploration#readme",
   "devDependencies": {
     "elm": "^0.18.0",
+    "elm-format": "^0.6.1-alpha",
     "elm-test": "^0.18.12"
   }
 }
