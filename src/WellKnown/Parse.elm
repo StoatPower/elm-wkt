@@ -4,7 +4,9 @@ import GeoJson exposing (Geometry(..), Position)
 import Combine as C exposing (..)
 import Combine.Num as C exposing (..)
 
+{-| 
 
+-}
 geometryParser : Parser () Geometry
 geometryParser =
     choice
@@ -20,7 +22,7 @@ geometryCollectionParser =
 
 simpleGeometryListParser : Parser () (List Geometry)
 simpleGeometryListParser =
-    sepBy commaWhitespace (parens simpleGeometryParser)
+    sepBy commaWhitespace simpleGeometryParser
 
 
 simpleGeometryParser : Parser () Geometry
