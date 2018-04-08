@@ -1,6 +1,6 @@
 module Tests exposing (..)
 
-import WellKnown exposing (..)
+import WellKnown.Parse exposing (..)
 import GeoJson exposing (Geometry(..), Position)
 import Combine as C
 import Expect exposing (Expectation)
@@ -113,8 +113,13 @@ suite =
             [ test "linestring geometry (int) without position parens and no altitude" <|
                 \_ ->
                     testParser lineStringParser "LINESTRING (1 1, 2 2)" (LineString [(1.0, 1.0, 0.0), (2.0, 2.0, 0.0)])
-            , test "linestring geometry (float) with position parens and altitude" <|
+            ]
+        , describe "parse MultiLineString"
+            [ test "multilinestring geometry (float) with position parens and altitude" <|
                 \_ ->
-                    testParser multiLineStringParser "MULTILINESTRING (((1.0 1.0 1.0), (2.0 2.0 2.0)), ((3.0 3.0 3.0), (4.0 4.0 4.0)))" (MultiLineString [[(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)], [(3.0, 3.0, 3.0), (4.0, 4.0, 4.0)]])
+                    testParser 
+                        multiLineStringParser 
+                        "MULTILINESTRING (((1.0 1.0 1.0), (2.0 2.0 2.0)), ((3.0 3.0 3.0), (4.0 4.0 4.0)))" 
+                        (MultiLineString [[(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)], [(3.0, 3.0, 3.0), (4.0, 4.0, 4.0)]])
             ]
         ]
