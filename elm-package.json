@@ -1,12 +1,14 @@
 {
-    "version": "4.0.0",
+    "version": "1.0.0",
     "summary": "Example Project",
     "repository": "https://github.com/StoatPower/elm-wkt.git",
     "license": "BSD-3-Clause",
     "source-directories": [
         "src"
     ],
-    "exposed-modules": ["WellKnown"],
+    "exposed-modules": [
+        "WellKnown"
+    ],
     "dependencies": {
         "Bogdanp/elm-combine": "3.1.1 <= v < 4.0.0",
         "elm-lang/core": "5.0.0 <= v < 6.0.0",
