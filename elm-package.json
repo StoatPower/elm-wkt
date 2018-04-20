@@ -1,5 +1,5 @@
 {
-    "version": "1.0.1",
+    "version": "1.0.2",
     "summary": "WKT <-> GeoJSON parser/unparser",
     "repository": "https://github.com/StoatPower/elm-wkt.git",
     "license": "BSD-3-Clause",
