@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/StoatPower/elm-wkt-exploration.git"
+    "url": "git+https://github.com/StoatPower/elm-wkt.git"
   },
   "author": "Matthew Caldwell",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/StoatPower/elm-wkt-exploration/issues"
+    "url": "https://github.com/StoatPower/elm-wkt/issues"
   },
-  "homepage": "https://github.com/StoatPower/elm-wkt-exploration#readme",
+  "homepage": "https://github.com/StoatPower/elm-wkt#readme",
   "devDependencies": {
     "elm": "^0.18.0",
     "elm-format": "^0.6.1-alpha",
