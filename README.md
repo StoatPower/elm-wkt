@@ -1,7 +1,6 @@
 # elm-wkt
 
-This library is a naive, incomplete, yet pragmatic implementation of [OGC 06-103r4 version 1.2.1]
-(http://www.opengeospatial.org/standards/sfa). As such, and as it stands now, it is solely intended for conversion between itself and GeoJSON.
+This library is a naive, incomplete, yet pragmatic implementation of [OGC 06-103r4 version 1.2.1](http://www.opengeospatial.org/standards/sfa). As such, and as it stands now, it is solely intended for conversion between itself and GeoJSON.
 
 ### Install
 ```

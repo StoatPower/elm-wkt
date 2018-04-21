@@ -1,6 +1,6 @@
 {
   "name": "elm-wkt-exploration",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Exploration for writing a WKT parser in the Elm language.",
   "main": "index.js",
   "scripts": {
