@@ -17,6 +17,7 @@ npm run test
 
 ### Read WKT into GeoJson Geometries
 ```
+import GeoJson exposing (..)
 import WellKnown exposing (read)
 
 wkt = "GEOMETRYCOLLECTION (POINT (4 6), LINESTRING (4 6, 7 10))"
@@ -28,6 +29,7 @@ geometry =
 
 ### Write GeoJson Geometries to a WKT String
 ```
+import GeoJson exposing (..)
 import WellKnown exposing (write)
 
 geometry : Geometry

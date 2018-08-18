@@ -1,7 +1,7 @@
 {
-  "name": "elm-wkt-exploration",
+  "name": "elm-wkt",
   "version": "1.0.4",
-  "description": "Exploration for writing a WKT parser in the Elm language.",
+  "description": "A Wellknown Text (WKT) parser/unparser in the Elm language.",
   "main": "index.js",
   "scripts": {
     "elm-package": "elm-package",
