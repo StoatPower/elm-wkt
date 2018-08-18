@@ -16,7 +16,7 @@
     "url": "git+https://github.com/StoatPower/elm-wkt.git"
   },
   "author": "Matthew Caldwell",
-  "license": "ISC",
+  "license": "BSD-3",
   "bugs": {
     "url": "https://github.com/StoatPower/elm-wkt/issues"
   },
