@@ -1,10 +1,10 @@
 module WellKnown.Unparse exposing (..)
 
-import GeoJson exposing (Geometry(..), Position)
 import Formatting as Fmt exposing (..)
+import GeoJson exposing (Geometry(..), Position)
 
 
-geometryFormat : Format r (Geometry -> r) 
+geometryFormat : Format String (Geometry -> String)
 geometryFormat =
     Format
         (\callback geometry ->
@@ -70,12 +70,11 @@ positionListListFormat =
         )
 
 
-
 positionListFormat : Format r (List Position -> r)
 positionListFormat =
     Format
         (\callback positions ->
-            callback <| print listFormat positionFormat positions 
+            callback <| print listFormat positionFormat positions
         )
 
 
@@ -94,23 +93,23 @@ listFormat =
 positionFormat : Format r (Position -> r)
 positionFormat =
     Format
-        (\callback (lon, lat, alt) ->
+        (\callback ( lon, lat, alt ) ->
             callback <|
-                case alt == 0.0 of
-                    True ->
-                        (toString lon) ++ " " ++ (toString lat)
+                if alt == 0.0 then
+                    String.fromFloat lon ++ " " ++ String.fromFloat lat
 
-                    False ->
-                        (toString lon) ++ " " ++ (toString lat) ++ " " ++ (toString alt)
+                else
+                    String.fromFloat lon ++ " " ++ String.fromFloat lat ++ " " ++ String.fromFloat alt
         )
 
 
 parenthesize : Format r (String -> r)
 parenthesize =
-    s "(" <> string <> s")"
+    --s "(" <> string <> s")"
+    s "(" |> bs string |> bs (s ")")
 
 
 prefixFormat : Format r (String -> String -> r)
 prefixFormat =
-    string <> string
-
+    --string <> string
+    string |> bs string

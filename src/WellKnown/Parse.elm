@@ -1,31 +1,40 @@
 module WellKnown.Parse exposing (..)
 
 import GeoJson exposing (Geometry(..), Position)
-import Combine as C exposing (..)
-import Combine.Num as C exposing (..)
+import Parser exposing (..)
+import Parser.Extras exposing (..)
 
 
-geometryParser : Parser () Geometry
+geometryParser : Parser Geometry
 geometryParser =
-    choice
+    oneOf
         [ simpleGeometryParser
         , geometryCollectionParser
         ]
 
 
-geometryCollectionParser : Parser () Geometry
+geometryCollectionParser : Parser Geometry
 geometryCollectionParser =
-    prefix "GEOMETRYCOLLECTION" *> (GeometryCollection <$> parens simpleGeometryListParser)
+    succeed GeometryCollection
+        |. prefix "GEOMETRYCOLLECTION"
+        |= parens simpleGeometryListParser
 
 
-simpleGeometryListParser : Parser () (List Geometry)
+simpleGeometryListParser : Parser (List Geometry)
 simpleGeometryListParser =
-    sepBy commaWhitespace simpleGeometryParser
+    sequence
+        { start = ""
+        , separator = ","
+        , end = ""
+        , spaces = spaces
+        , item = simpleGeometryParser
+        , trailing = Parser.Optional
+        }
 
 
-simpleGeometryParser : Parser () Geometry
+simpleGeometryParser : Parser Geometry
 simpleGeometryParser =
-    choice
+    oneOf
         [ pointParser
         , multiPointParser
         , lineStringParser
@@ -35,81 +44,136 @@ simpleGeometryParser =
         ]
 
 
-multiPolygonParser : Parser () Geometry
+multiPolygonParser : Parser Geometry
 multiPolygonParser =
-    prefix "MULTIPOLYGON" *> (MultiPolygon <$> parens positionListListListParser)
+    succeed MultiPolygon
+        |. prefix "MULTIPOLYGON"
+        |= parens positionListListListParser
 
 
-polygonParser : Parser () Geometry
+polygonParser : Parser Geometry
 polygonParser =
-    prefix "POLYGON" *> (Polygon <$> parens positionListListParser)
+    succeed Polygon
+        |. prefix "POLYGON"
+        |= parens positionListListParser
 
 
-multiLineStringParser : Parser () Geometry
+multiLineStringParser : Parser Geometry
 multiLineStringParser =
-    prefix "MULTILINESTRING" *> (MultiLineString <$> parens positionListListParser)
+    succeed MultiLineString
+        |. prefix "MULTILINESTRING"
+        |= parens positionListListParser
 
 
-lineStringParser : Parser () Geometry
+lineStringParser : Parser Geometry
 lineStringParser =
-    prefix "LINESTRING" *> (LineString <$> parens positionListParser)
+    succeed LineString
+        |. prefix "LINESTRING"
+        |= parens positionListParser
 
 
-multiPointParser : Parser () Geometry
+multiPointParser : Parser Geometry
 multiPointParser =
-    prefix "MULTIPOINT" *> (MultiPoint <$> parens positionListParser)
+    succeed MultiPoint
+        |. prefix "MULTIPOINT"
+        |= parens positionListParser
 
 
-pointParser : Parser () Geometry
+pointParser : Parser Geometry
 pointParser =
-    prefix "POINT" *> (Point <$> parens positionParser)
+    succeed Point
+        |. prefix "POINT"
+        |= parens positionParser
 
 
-positionListListListParser : Parser () (List (List (List Position)))
+positionListListListParser : Parser (List (List (List Position)))
 positionListListListParser =
-    sepBy commaWhitespace (parens positionListListParser)
+    sequence
+        { start = ""
+        , separator = ","
+        , end = ""
+        , spaces = spaces
+        , item = parens positionListListParser
+        , trailing = Parser.Optional
+        }
 
 
-positionListListParser : Parser () (List (List Position))
+positionListListParser : Parser (List (List Position))
 positionListListParser =
-    sepBy commaWhitespace (parens positionListParser)
+    sequence
+        { start = ""
+        , separator = ","
+        , end = ""
+        , spaces = spaces
+        , item = parens positionListParser
+        , trailing = Parser.Optional
+        }
 
 
-positionListParser : Parser () (List Position)
+positionListParser : Parser (List Position)
 positionListParser =
-    sepBy commaWhitespace positionParser
+    sequence
+        { start = ""
+        , separator = ","
+        , end = ""
+        , spaces = spaces
+        , item = positionParser
+        , trailing = Parser.Optional
+        }
 
 
-positionParser : Parser () Position
+positionParser : Parser Position
 positionParser =
-    choice [ positionNoParensParser, positionWithParensParser ]
+    oneOf [ positionNoParensParser, positionWithParensParser ]
 
 
-positionNoParensParser : Parser () Position
+positionNoParensParser : Parser Position
 positionNoParensParser =
-    toPosition <$> numberParser <* whitespace <*> numberParser <*> (whitespace *> optional 0.0 numberParser)
+    succeed toPosition
+        |= float
+        |. commaWhitespace
+        |= float
+        |= altitudePostfix
 
 
-positionWithParensParser : Parser () Position
+positionWithParensParser : Parser Position
 positionWithParensParser =
     parens positionNoParensParser
 
 
-numberParser : Parser () Float
-numberParser =
-    choice [ float, toFloat <$> int ]
+toPosition : Float -> Float -> Maybe Float -> Position
+toPosition lon lat maybeAltitude =
+    ( lon, lat, Maybe.withDefault 0.0 maybeAltitude )
 
 
-toPosition : Float -> Float -> Float -> Position
-toPosition lon lat alt =
-    ( lon, lat, alt )
+altitudePostfix : Parser (Maybe Float)
+altitudePostfix =
+    oneOf
+        [ succeed identity |. commaWhitespace |= maybeFloat
+        , succeed Nothing
+        ]
 
 
-commaWhitespace : Parser s String
+maybeFloat : Parser (Maybe Float)
+maybeFloat =
+    oneOf
+        [ map Just float
+        , succeed Nothing
+        ]
+
+
+commaWhitespace : Parser ()
 commaWhitespace =
-    (string ",") *> whitespace
+    oneOf
+        [ spaces
+        , succeed ()
+            |. symbol ","
+            |. spaces
+        ]
 
 
-prefix : String -> Parser s String
+prefix : String -> Parser ()
 prefix p =
-    (string p) *> whitespace
+    succeed ()
+        |. keyword p
+        |. spaces

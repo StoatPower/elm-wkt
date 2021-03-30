@@ -4,10 +4,11 @@
   "description": "A Wellknown Text (WKT) parser/unparser in the Elm language.",
   "main": "index.js",
   "scripts": {
-    "elm-package": "elm-package",
-    "elm-make": "elm-make",
-    "elm-reactor": "elm-reactor",
-    "elm-repl": "elm-repl",
+    "elm": "elm",
+    "elm-install": "elm install",
+    "elm-make": "elm make",
+    "elm-reactor": "elm reactor",
+    "elm-repl": "elm repl",
     "elm-test": "elm-test",
     "test": "elm-test --compiler \"./node_modules/.bin/elm-make\""
   },
@@ -22,8 +23,8 @@
   },
   "homepage": "https://github.com/StoatPower/elm-wkt#readme",
   "devDependencies": {
-    "elm": "^0.18.0",
-    "elm-format": "^0.6.1-alpha",
-    "elm-test": "^0.18.12"
+    "elm": "^0.19.1-5",
+    "elm-format": "^0.8.5",
+    "elm-test": "^0.19.1-revision6"
   }
 }

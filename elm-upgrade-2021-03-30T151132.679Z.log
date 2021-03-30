@@ -1,0 +1,13 @@
+INFO: Found elm at node_modules\.bin\elm.CMD
+INFO: Found elm 0.19.1
+INFO: Found elm-format at node_modules\.bin\elm-format.CMD
+INFO: Found elm-format 0.8.5
+INFO: Cleaning ./elm-stuff before upgrading
+INFO: Converting elm-package.json -> elm.json
+INFO: Detected a package project (this project has exposed modules)
+WARNING: Bogdanp/elm-combine has not been upgraded to 0.19 yet!
+INFO: Switching from elm-lang/core (deprecated) to elm/core
+INFO: Installing latest version of elm/core
+WARNING: krisajenkins/formatting has not been upgraded to 0.19 yet!
+INFO: Installing latest version of mgold/elm-geojson
+INFO: Upgrading *.elm files in src/

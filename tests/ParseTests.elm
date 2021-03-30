@@ -1,29 +1,28 @@
 module ParseTests exposing (..)
 
-import WellKnown.Parse exposing (..)
-import WellKnown.Unparse exposing (..)
-import GeoJson exposing (Geometry(..), Position)
-import Combine as C
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
+import GeoJson exposing (Geometry(..), Position)
+import Parser exposing (..)
 import Test exposing (..)
+import WellKnown.Parse exposing (..)
+import WellKnown.Unparse exposing (..)
 
 
-testParser : C.Parser () a -> String -> a -> Expectation
+testParser : Parser a -> String -> a -> Expectation
 testParser parser input expectedResult =
-    case C.parse parser input of
-        Ok ( _, _, result ) ->
+    case run parser input of
+        Ok result ->
             Expect.equal result expectedResult
 
-        Err ( _, _, errors ) ->
-            Expect.fail (String.join "\n" errors)
+        Err errors ->
+            Expect.fail <| deadEndsToString errors
 
 
 suite : Test
 suite =
     describe "WKT to GeoJSON"
-        [ numberTests
-        , positionTests
+        [ positionTests
         , positionListTests
         , positionListListTests
         , positionListListListTests
@@ -37,22 +36,23 @@ suite =
         ]
 
 
-numberTests : Test
-numberTests =
-    describe "parse number"
-        [ test "positive float" <|
-            \_ ->
-                testParser numberParser "1.1" 1.1
-        , test "negative float" <|
-            \_ ->
-                testParser numberParser "-1.1" -1.1
-        , test "positive int" <|
-            \_ ->
-                testParser numberParser "1" 1
-        , test "negative int" <|
-            \_ ->
-                testParser numberParser "-1" -1
-        ]
+
+-- numberTests : Test
+-- numberTests =
+--     describe "parse number"
+--         [ test "positive float" <|
+--             \_ ->
+--                 testParser numberParser "1.1" 1.1
+--         , test "negative float" <|
+--             \_ ->
+--                 testParser numberParser "-1.1" -1.1
+--         , test "positive int" <|
+--             \_ ->
+--                 testParser numberParser "1" 1
+--         , test "negative int" <|
+--             \_ ->
+--                 testParser numberParser "-1" -1
+--         ]
 
 
 positionTests : Test
@@ -96,19 +96,19 @@ positionListTests =
             expected =
                 [ ( 1.0, 1.0, 0.0 ), ( 2.0, 2.0, 0.0 ) ]
          in
-            [ test "list of float positions without parens" <|
-                \_ ->
-                    testParser positionListParser "1.0 1.0, 2.0 2.0" expected
-            , test "list of float positions with parens" <|
-                \_ ->
-                    testParser positionListParser "(1.0 1.0), (2.0 2.0)" expected
-            , test "list of int positions without parens" <|
-                \_ ->
-                    testParser positionListParser "1 1, 2 2" expected
-            , test "list of int positions with parens" <|
-                \_ ->
-                    testParser positionListParser "(1 1), (2 2)" expected
-            ]
+         [ test "list of float positions without parens" <|
+            \_ ->
+                testParser positionListParser "1.0 1.0, 2.0 2.0" expected
+         , test "list of float positions with parens" <|
+            \_ ->
+                testParser positionListParser "(1.0 1.0), (2.0 2.0)" expected
+         , test "list of int positions without parens" <|
+            \_ ->
+                testParser positionListParser "1 1, 2 2" expected
+         , test "list of int positions with parens" <|
+            \_ ->
+                testParser positionListParser "(1 1), (2 2)" expected
+         ]
         )
 
 
@@ -119,13 +119,13 @@ positionListListTests =
             expected =
                 [ [ ( 1.0, 1.0, 0.0 ), ( 2.0, 2.0, 0.0 ) ], [ ( 3.0, 3.0, 0.0 ), ( 4.0, 4.0, 0.0 ) ] ]
          in
-            [ test "list of a list of int positions without position parens and no altitude" <|
-                \_ ->
-                    testParser positionListListParser "(1 1, 2 2), (3 3, 4 4)" expected
-            , test "list of a list of int positions with position parens and altitude" <|
-                \_ ->
-                    testParser positionListListParser "((1 1 0), (2 2 0)), ((3 3 0), (4 4 0))" expected
-            ]
+         [ test "list of a list of int positions without position parens and no altitude" <|
+            \_ ->
+                testParser positionListListParser "(1 1, 2 2), (3 3, 4 4)" expected
+         , test "list of a list of int positions with position parens and altitude" <|
+            \_ ->
+                testParser positionListListParser "((1 1 0), (2 2 0)), ((3 3 0), (4 4 0))" expected
+         ]
         )
 
 
